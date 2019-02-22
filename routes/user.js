@@ -8,6 +8,7 @@ const router = express.Router()
 const validateUser = require('../validation/user')
 const User = require('../models/user')
 
+// Endpoint to signup a new user
 router.post('/signup', async function (req, res) {
   const {error, value} = validateUser(req.body)
   if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
@@ -25,9 +26,25 @@ router.post('/signup', async function (req, res) {
   res.status(httpStatusCodes.CREATED).send(response)
 })
 
-router.get('/all', async function(req, res){
-  const users = await User.find({}).select('-password');
-  res.status(httpStatusCodes.OK).send(users);
+// Endpoint to get all users
+router.get('/all', async function (req, res) {
+  try {
+    const users = await User.find({}).select('-password')
+    res.status(httpStatusCodes.OK).send(users)
+  } catch (exception) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+  }
+})
+
+router.get('/:id', async function (req, res) {
+  const userId = req.params.id;
+  try {
+    const user = await User.find({_id: userId}).select('-password')
+    if (!user) res.status(httpStatusCodes.BAD_REQUEST).send({message: 'Invalid data supplied'})
+    res.status(httpStatusCodes.OK).send(user)
+  } catch (exception) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+  }
 })
 
 module.exports = router
