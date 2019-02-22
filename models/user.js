@@ -29,9 +29,9 @@ const userSchema = new Schema({
   }
 })
 
-const User = mongoose.Model('User', userSchema) // create the user model
+const User = mongoose.model('User', userSchema) // create the user model
 
-User.methods.generateJsonWebToken = function () {
+userSchema.methods.generateJsonWebToken = function () {
   return jwt.sign({
     userId: this._id,
     name: this.name,
