@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const express = require('express')
 const httpStatusCodes = require('http-status-codes')
 const bcrypt = require('bcrypt')
-
+const auth = require('../middlewares/auth')
 const router = express.Router()
 const validateUser = require('../validation/user')
 const User = require('../models/user')
@@ -27,7 +27,7 @@ router.post('/signup', async function (req, res) {
 })
 
 // Endpoint to get all users
-router.get('/all', async function (req, res) {
+router.get('/all', auth, async function (req, res) {
   try {
     const users = await User.find({}).select('-password')
     res.status(httpStatusCodes.OK).send(users)
@@ -37,7 +37,7 @@ router.get('/all', async function (req, res) {
 })
 
 // Endpoint to get a single user
-router.get('/:id', async function (req, res) {
+router.get('/:id', auth, async function (req, res) {
   const userId = req.params.id
   try {
     const user = await User.find({_id: userId}).select('-password')
@@ -49,13 +49,13 @@ router.get('/:id', async function (req, res) {
 })
 
 // Endpoint to update a single user
-router.patch('/:id', async function (req, res) {
+router.patch('/:id', auth, async function (req, res) {
   const {error, value} = validateUser(req.body)
   if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
   const userId = req.params.id
   try {
     const getUser = await User.find({_id: userId})
-    if(getUser.length === 0)res.status(httpStatusCodes.NOT_FOUND).send({message: 'User not found'})
+    if (getUser.length === 0) res.status(httpStatusCodes.NOT_FOUND).send({message: 'User not found'})
     const SALT_FACTOR = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, SALT_FACTOR)
     const updateUser = await User.updateOne({_id: userId}, {
@@ -75,11 +75,11 @@ router.patch('/:id', async function (req, res) {
   }
 })
 
-router.delete('/:id', async function (req, res) {
+router.delete('/:id', auth, async function (req, res) {
   const userId = req.params.id
   try {
     const user = await User.find({_id: userId})
-    if(user.length === 0)res.status(httpStatusCodes.NOT_FOUND).send({message: 'User not found'})
+    if (user.length === 0) res.status(httpStatusCodes.NOT_FOUND).send({message: 'User not found'})
     const deleteUser = await User.findByIdAndRemove(userId)
     if (!deleteUser) {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send({message: 'User could not be deleted at this time'})
