@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const Schema = mongoose.Schema
+require('dotenv').config() // pull in dotenv to access enviroment variables
+
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const userSchema = new Schema({
   name: {
@@ -33,7 +36,7 @@ User.methods.generateJsonWebToken = function () {
     userId: this._id,
     name: this.name,
     email: this.email
-  })
+  }, JWT_SECRET_KEY)
 }
 
 module.exports = User // Export the model class
