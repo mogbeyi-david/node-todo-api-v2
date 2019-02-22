@@ -25,6 +25,6 @@ const userSchema = new Schema({
   }
 })
 
-const User = mongoose.Model('User', userSchema);
+const User = mongoose.Model('User', userSchema); // create the user model
 
-export default User;
+module.exports = User; // Export the model class
