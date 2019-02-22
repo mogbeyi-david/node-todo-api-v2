@@ -20,10 +20,12 @@ app.use(bodyParser.json());
 
 //Pull in routes
 const user = require('./routes/user');
+const authenticateUser = require('./routes/auth');
 
 
 //Use Routes middleware
 app.use('/api/user', user);
+app.use('/api/user/auth', authenticateUser)
 
 //Set app to listen on PORT
 app.listen(PORT, () => {

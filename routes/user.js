@@ -8,7 +8,7 @@ const router = express.Router()
 const validateUser = require('../validation/user')
 const User = require('../models/user')
 
-router.post('/', async function (req, res) {
+router.post('/signup', async function (req, res) {
   const {error, value} = validateUser(req.body)
   if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
   const SALT_FACTOR = await bcrypt.genSalt(10)

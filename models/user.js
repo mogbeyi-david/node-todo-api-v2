@@ -29,8 +29,6 @@ const userSchema = new Schema({
   }
 })
 
-const User = mongoose.model('User', userSchema) // create the user model
-
 userSchema.methods.generateJsonWebToken = function () {
   return jwt.sign({
     userId: this._id,
@@ -38,5 +36,7 @@ userSchema.methods.generateJsonWebToken = function () {
     email: this.email
   }, JWT_SECRET_KEY)
 }
+
+const User = mongoose.model('User', userSchema) // create the user model
 
 module.exports = User // Export the model class
