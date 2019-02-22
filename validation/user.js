@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-function validateNewUser (user) {
+function validateUser (user) {
   const schema = Joi.object().keys({
     name: Joi.string().required(),
     email: Joi.string().required().email,
