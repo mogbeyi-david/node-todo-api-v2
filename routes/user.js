@@ -62,10 +62,11 @@ router.patch('/:id', async function (req, res) {
         password: hashedPassword
       }
     })
-    if (updateUser) {
-      const user = await User.find({_id: userId}).select('-password')
-      res.status(httpStatusCodes.OK).send(user)
+    if (!updateUser) {
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send('Sorry, could not update user at this time')
     }
+    const user = await User.find({_id: userId}).select('-password')
+    res.status(httpStatusCodes.OK).send(user)
   } catch (exception) {
     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
   }
