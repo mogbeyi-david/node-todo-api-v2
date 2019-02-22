@@ -7,7 +7,7 @@ function validateTodo (todo) {
     isComplete: Joi.boolean().required(),
     userId: Joi.string().required()
   }
-  return Joi.validate(user, schema)
+  return Joi.validate(todo, schema)
 }
 
 module.exports = validateTodo
