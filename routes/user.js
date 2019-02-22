@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const mongoose = require('mongoose')
 const express = require('express')
 const httpStatusCodes = require('http-status-codes')
@@ -18,7 +19,8 @@ router.post('/', async function (req, res) {
     password: hashedPassword
   })
   const user = await newUser.save()
-  res.status(httpStatusCodes.CREATED).send(user)
+  const response = _.pick(user, ['_id', 'name', 'email'])
+  res.status(httpStatusCodes.CREATED).send(response)
 })
 
 module.exports = router
