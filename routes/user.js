@@ -48,11 +48,14 @@ router.get('/:id', async function (req, res) {
   }
 })
 
+// Endpoint to update a single user
 router.patch('/:id', async function (req, res) {
   const {error, value} = validateUser(req.body)
   if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
   const userId = req.params.id
   try {
+    const getUser = await User.find({_id: userId})
+    if(getUser.length === 0)res.status(httpStatusCodes.NOT_FOUND).send({message: 'User not found'})
     const SALT_FACTOR = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, SALT_FACTOR)
     const updateUser = await User.updateOne({_id: userId}, {
@@ -69,6 +72,21 @@ router.patch('/:id', async function (req, res) {
     res.status(httpStatusCodes.OK).send(user)
   } catch (exception) {
     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+  }
+})
+
+router.delete('/:id', async function (req, res) {
+  const userId = req.params.id
+  try {
+    const user = await User.find({_id: userId})
+    if(user.length === 0)res.status(httpStatusCodes.NOT_FOUND).send({message: 'User not found'})
+    const deleteUser = await User.findByIdAndRemove(userId)
+    if (!deleteUser) {
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send({message: 'User could not be deleted at this time'})
+    }
+    res.status(httpStatusCodes.OK).send({message: 'User deleted successfully'})
+  } catch (e) {
+    res.status(httpStatusCodes.OK).send()
   }
 })
 
