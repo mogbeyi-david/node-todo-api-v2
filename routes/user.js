@@ -11,7 +11,7 @@ const User = require('../models/user')
 //Endpoint to get the currently logged in user
 
 router.get('/me', auth, async function (req, res) {
-  const user = await User.findById(req.user._id).select('-password')
+  const user = await User.findById(req.user.userId).select('-password')
   res.status(httpStatusCodes.OK).send(user)
 })
 
