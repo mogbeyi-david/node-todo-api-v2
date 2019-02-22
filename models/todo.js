@@ -7,8 +7,7 @@ const todoSchema = new Schema({
     required: true,
   },
   description: {
-    type: String,
-    required: true
+    type: String
   },
   isComplete: {
     type: Boolean,
@@ -22,6 +21,7 @@ const todoSchema = new Schema({
     type: Date
   },
   userId:{
+    required: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
