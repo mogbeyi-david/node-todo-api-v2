@@ -27,7 +27,7 @@ const todo = require('./routes/todo');
 //Use Routes middleware
 app.use('/api/user', user)
 app.use('/api/user/auth', authenticateUser)
-app.use('/api/todo', todo)
+// app.use('/api/todo', todo)
 
 //Set app to listen on PORT
 app.listen(PORT, () => {

@@ -8,11 +8,18 @@ const router = express.Router()
 const validateUser = require('../validation/user')
 const User = require('../models/user')
 
+//Endpoint to get the currently logged in user
+
+router.get('/me', auth, async function (req, res) {
+  const user = await User.findById(req.user._id).select('-password')
+  res.status(httpStatusCodes.OK).send(user)
+})
+
 // Endpoint to signup a new user
 router.post('/signup', async function (req, res) {
   const {error, value} = validateUser(req.body)
   if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
-  const user = await User.find({email: req.body.email})
+  const user = await User.findOne({email: req.body.email})
   if (user) res.status(httpStatusCodes.BAD_REQUEST).send({message: 'User already exists', data: req.body})
   const SALT_FACTOR = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(req.body.password, SALT_FACTOR)
