@@ -25,4 +25,9 @@ router.post('/signup', async function (req, res) {
   res.status(httpStatusCodes.CREATED).send(response)
 })
 
+router.get('/all', async function(req, res){
+  const users = await User.find({}).select('-password');
+  res.status(httpStatusCodes.OK).send(users);
+})
+
 module.exports = router
