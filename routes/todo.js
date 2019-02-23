@@ -32,4 +32,16 @@ router.get('/all', auth, async function (req, res) {
   }
 })
 
+// Endpoint to get a single todo
+router.get('/:id', auth, async function (req, res) {
+  const todoId = req.params.id
+  try {
+    const todo = await Todo.find({_id: todoId})
+    if (!todo) res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos Found'})
+    res.status(httpStatusCodes.OK).send(todo)
+  } catch (exception) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+  }
+})
+
 module.exports = router
