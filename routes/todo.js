@@ -44,6 +44,32 @@ router.get('/:id', auth, async function (req, res) {
   }
 })
 
+// Endpoint to update a single todo
+router.patch('/:id', auth, async function (req, res) {
+  const {error, value} = validateTodo(req.body)
+  if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
+  const todoId = req.params.id
+  try {
+    const getTodo = await Todo.find({_id: todoId})
+    if (getTodo.length === 0) res.status(httpStatusCodes.NOT_FOUND).send({message: 'Todo not found'})
+    const updateTodo = await Todo.updateOne({_id: todoId}, {
+      $set: {
+        todo: req.body.todo,
+        description: req.body.description,
+        isComplete: req.body.isComplete,
+        completedAt: req.body.completedAt
+      }
+    })
+    if (!updateTodo) {
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send('Sorry, could not update todo at this time')
+    }
+    const todo = await Todo.find({_id: todoId})
+    res.status(httpStatusCodes.OK).send(todo)
+  } catch (exception) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+  }
+})
+
 // Endpoint to delete a todo
 router.delete('/:id', auth, async function (req, res) {
   const todoId = req.params.id
