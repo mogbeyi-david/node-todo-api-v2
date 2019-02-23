@@ -44,4 +44,19 @@ router.get('/:id', auth, async function (req, res) {
   }
 })
 
+// Endpoint to delete a todo
+router.delete('/:id', auth, async function (req, res) {
+  const todoId = req.params.id
+  try {
+    const todo = await Todo.find({_id: todoId})
+    if (todo.length === 0) res.status(httpStatusCodes.NOT_FOUND).send({message: 'Todo not found'})
+    const deleteTodo = await Todo.findByIdAndRemove(todoId)
+    if (!deleteTodo) {
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send({message: 'Todo could not be deleted at this time'})
+    }
+    res.status(httpStatusCodes.OK).send({message: 'Todo deleted successfully'})
+  } catch (exception) {
+    res.status(httpStatusCodes.OK).send(exception.message)
+  }
+})
 module.exports = router
