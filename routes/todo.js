@@ -87,7 +87,6 @@ router.delete('/:id', auth, async function (req, res) {
 })
 
 router.get('/', auth, async function (req, res) {
-  console.log(req.user.userId);
   try {
     const userTodos = await Todo.find({userId: req.user.userId});
     if(!userTodos)res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos found'})
