@@ -23,6 +23,10 @@ const userSchema = new Schema({
     minlength: 6,
     maxlength: 255
   },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   date: {
     type: Date,
     default: Date.now
@@ -33,7 +37,8 @@ userSchema.methods.generateJsonWebToken = function () {
   return jwt.sign({
     userId: this._id,
     name: this.name,
-    email: this.email
+    email: this.email,
+    isAdmin: this.isAdmin
   }, JWT_SECRET_KEY)
 }
 

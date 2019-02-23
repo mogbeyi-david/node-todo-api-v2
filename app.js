@@ -22,10 +22,12 @@ app.use(express.json())
 //Pull in routes
 const user = require('./routes/user')
 const authenticateUser = require('./routes/auth')
+const todo = require('./routes/todo');
 
 //Use Routes middleware
 app.use('/api/user', user)
 app.use('/api/user/auth', authenticateUser)
+app.use('/api/todo', todo)
 
 //Set app to listen on PORT
 app.listen(PORT, () => {
