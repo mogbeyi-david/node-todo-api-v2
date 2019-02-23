@@ -7,3 +7,19 @@ const router = express.Router()
 const validateTodo = require('../validation/todo')
 const User = require('../models/user')
 const Todo = require('../models/todo');
+
+router.post('/create', auth, async function (req, res) {
+  const {error, value} = validateTodo(req.body)
+  if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
+  const newTodo = new Todo({
+    todo: req.body.todo,
+    description: req.body.description,
+    isComplete: req.body.isComplete,
+    completedAt: req.body.completedAt,
+    userId: req.user.userId
+  })
+  const result = await newTodo.save()
+  res.status(httpStatusCodes.CREATED).send(result)
+})
+
+module.exports = router
