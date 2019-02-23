@@ -4,8 +4,7 @@ function validateTodo (todo) {
   const schema = {
     todo: Joi.string().required(),
     description: Joi.string(),
-    isComplete: Joi.boolean().required(),
-    userId: Joi.string().required()
+    isComplete: Joi.boolean().required()
   }
   return Joi.validate(todo, schema)
 }
