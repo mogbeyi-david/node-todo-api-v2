@@ -85,4 +85,17 @@ router.delete('/:id', auth, async function (req, res) {
     res.status(httpStatusCodes.OK).send(exception.message)
   }
 })
+
+router.get('/', auth, async function (req, res) {
+  console.log(req.user.userId);
+  try {
+    const userTodos = await Todo.find({userId: req.user.userId});
+    if(!userTodos)res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos found'})
+    res.status(httpStatusCodes.OK).send(userTodos)
+  } catch (exception) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+  }
+})
+
+// Endpoint to get all todos for a user
 module.exports = router
