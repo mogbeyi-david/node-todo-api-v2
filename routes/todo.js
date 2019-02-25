@@ -11,7 +11,7 @@ const validateObjectId = require('../middlewares/validate-objectId')
 
 router.post('/create', auth, async function (req, res) {
   const {error, value} = validateTodo(req.body)
-  if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
+  if (error) return res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
   const newTodo = new Todo({
     todo: req.body.todo,
     description: req.body.description,
