@@ -53,11 +53,5 @@ describe('/api/todos', () => {
       expect(response.status).toBe(404)
       expect(response.body.message).toMatch(/No Todos Found/)
     })
-
-    it('should return a 500 error if an improper ID is passed', async () => {
-      const id = 'xxx'
-      const response = await request(server).get(`/api/todo/${id}`)
-      expect(response.status).toBe(500)
-    })
   })
 })
