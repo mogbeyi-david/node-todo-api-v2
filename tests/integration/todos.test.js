@@ -73,10 +73,24 @@ describe('/api/todos', () => {
         .set('x-auth-token', token)
         .send({
         description: 'Description for first todo',
-        isComplete: false,
-        userId: '5c70a1cd68a83e13b39aae46'
+        isComplete: false
       })
       expect(response.status).toBe(400)
+    })
+    it('should return 201 and create todo in the database', async () => {
+      const token = (new User()).generateJsonWebToken();
+      const response = await request(server)
+        .post('/api/todo/create')
+        .set('x-auth-token', token)
+        .send({
+          todo: 'to be created todo',
+          description: 'Description for first todo',
+          isComplete: false
+        })
+      expect(response).not.toBeNull()
+      expect(response.status).toBe(201)
+      expect(response.body).toHaveProperty('_id')
+      expect(response.body).toHaveProperty('todo', 'to be created todo')
     })
   })
 })
