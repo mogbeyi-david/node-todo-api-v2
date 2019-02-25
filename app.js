@@ -5,9 +5,16 @@ const app = express()
 require('dotenv').config() // pull in dotenv to access enviroment variables
 
 // Declare environment variables
-const database = process.env.DATABASE
+
 const hostname = process.env.HOSTNAME
 const PORT = process.env.PORT || 3000
+
+// Set the database based on the environment
+
+const database = process.env.DATABASE
+if (process.env.ENVIRONMENT === 'testing') {
+  const database = process.env.TEST_DATABASE
+}
 
 //Try to connect to the database
 mongoose.connect(`mongodb://${hostname}/${database}`, {useNewUrlParser: true})
@@ -22,7 +29,7 @@ app.use(express.json())
 //Pull in routes
 const user = require('./routes/user')
 const authenticateUser = require('./routes/auth')
-const todo = require('./routes/todo');
+const todo = require('./routes/todo')
 
 //Use Routes middleware
 app.use('/api/user', user)
