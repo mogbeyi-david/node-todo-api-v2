@@ -38,6 +38,8 @@ app.use('/api/user/auth', authenticateUser)
 app.use('/api/todo', todo)
 
 //Set app to listen on PORT
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`App started and listening on port ${PORT}`)
 })
+
+module.exports = server

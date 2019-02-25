@@ -23,7 +23,7 @@ router.post('/create', auth, async function (req, res) {
 })
 
 // Endpoint to get all todos
-router.get('/all', auth, async function (req, res) {
+router.get('/all', async function (req, res) {
   try {
     const todos = await Todo.find({});
     res.status(httpStatusCodes.OK).send(todos)
