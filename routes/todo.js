@@ -35,6 +35,7 @@ router.get('/all', async function (req, res) {
 // Endpoint to get a single todo
 router.get('/:id', async function (req, res) {
   const todoId = req.params.id
+  if(!mongoose.Types.ObjectId.isValid(todoId)) return res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos Found'})
   try {
     const todo = await Todo.find({_id: todoId})
     if (todo.length === 0) return res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos Found'})
