@@ -11,7 +11,7 @@ describe('/api/todos', () => {
   })
 
   describe('GET/', () => {
-    it('should return all genres', async () => {
+    it('should return all todos', async () => {
       await Todo.collection.insertMany([
         {
           todo: 'first todo',

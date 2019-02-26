@@ -34,7 +34,7 @@ describe('auth middleware', () => {
   })
 
   it('should return 400 if token is invalid', async () => {
-    token = null
+    token = 'a'
     const response = await exec()
     expect(response.status).toBe(400)
   })
