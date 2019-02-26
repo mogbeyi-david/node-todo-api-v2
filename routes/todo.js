@@ -6,11 +6,12 @@ const auth = require('../middlewares/auth')
 const router = express.Router()
 const validateTodo = require('../validation/todo')
 const User = require('../models/user')
-const Todo = require('../models/todo');
+const Todo = require('../models/todo')
+const validateObjectId = require('../middlewares/validate-objectId')
 
 router.post('/create', auth, async function (req, res) {
   const {error, value} = validateTodo(req.body)
-  if (error) res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
+  if (error) return res.status(httpStatusCodes.BAD_REQUEST).send({message: error.details[0].message, data: value})
   const newTodo = new Todo({
     todo: req.body.todo,
     description: req.body.description,
@@ -23,9 +24,9 @@ router.post('/create', auth, async function (req, res) {
 })
 
 // Endpoint to get all todos
-router.get('/all', auth, async function (req, res) {
+router.get('/all', async function (req, res) {
   try {
-    const todos = await Todo.find({});
+    const todos = await Todo.find({})
     res.status(httpStatusCodes.OK).send(todos)
   } catch (exception) {
     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
@@ -33,14 +34,14 @@ router.get('/all', auth, async function (req, res) {
 })
 
 // Endpoint to get a single todo
-router.get('/:id', auth, async function (req, res) {
+router.get('/:id', validateObjectId, async function (req, res) {
   const todoId = req.params.id
   try {
     const todo = await Todo.find({_id: todoId})
-    if (!todo) res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos Found'})
+    if (todo.length === 0) return res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos Found'})
     res.status(httpStatusCodes.OK).send(todo)
   } catch (exception) {
-    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send({message: exception.message})
   }
 })
 
@@ -88,8 +89,8 @@ router.delete('/:id', auth, async function (req, res) {
 
 router.get('/', auth, async function (req, res) {
   try {
-    const userTodos = await Todo.find({userId: req.user.userId});
-    if(!userTodos)res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos found'})
+    const userTodos = await Todo.find({userId: req.user.userId})
+    if (!userTodos) res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos found'})
     res.status(httpStatusCodes.OK).send(userTodos)
   } catch (exception) {
     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
