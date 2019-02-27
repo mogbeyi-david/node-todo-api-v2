@@ -33,6 +33,17 @@ router.get('/all', async function (req, res) {
   }
 })
 
+//Get all the todos for a particular user
+router.get('/todos', auth, async function (req, res) {
+  try {
+    const userTodos = await Todo.find({userId: req.user.userId})
+    if (!userTodos) return res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos found'})
+    res.status(httpStatusCodes.OK).send({data: userTodos})
+  } catch (exception) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
+  }
+})
+
 // Endpoint to get a single todo
 router.get('/:id', validateObjectId, async function (req, res) {
   const todoId = req.params.id
@@ -87,15 +98,6 @@ router.delete('/:id', auth, async function (req, res) {
   }
 })
 
-router.get('/', auth, async function (req, res) {
-  try {
-    const userTodos = await Todo.find({userId: req.user.userId})
-    if (!userTodos) res.status(httpStatusCodes.NOT_FOUND).send({message: 'No Todos found'})
-    res.status(httpStatusCodes.OK).send(userTodos)
-  } catch (exception) {
-    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(exception.message)
-  }
-})
 
 // Endpoint to get all todos for a user
 module.exports = router
