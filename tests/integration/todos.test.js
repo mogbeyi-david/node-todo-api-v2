@@ -4,11 +4,13 @@ const Todo = require('../../models/todo')
 const User = require('../../models/user');
 
 describe('/api/todos', () => {
-  beforeEach(() => {server = require('../../app')})
+  beforeEach(() => {
+    server = require('../../app')
+  });
   afterEach(async () => {
-    server.close()
+    server.close();
     await Todo.remove({})
-  })
+  });
 
   describe('GET/', () => {
     it('should return all todos', async () => {
@@ -63,18 +65,19 @@ describe('/api/todos', () => {
         description: 'Description for first todo',
         isComplete: false,
         userId: '5c70a1cd68a83e13b39aae46'
-      })
+      });
       expect(response.status).toBe(401)
-    })
+    });
+
     it('should return 400 if todo does not todo title', async () => {
       const token = (new User()).generateJsonWebToken();
       const response = await request(server)
         .post('/api/todo/create')
         .set('x-auth-token', token)
         .send({
-        description: 'Description for first todo',
-        isComplete: false
-      })
+          description: 'Description for first todo',
+          isComplete: false
+        })
       expect(response.status).toBe(400)
     })
     it('should return 201 and create todo in the database', async () => {
