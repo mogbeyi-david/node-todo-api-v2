@@ -19,8 +19,12 @@ if (process.env.ENVIRONMENT === 'testing') {
 
 //Try to connect to the database
 mongoose.connect(`mongodb://${hostname}/${database}`, {useNewUrlParser: true})
-  .then(() => {console.log(`Connected to ${database} successfully`)})
-  .catch((error) => {console.error('Could not connect to Mongo DB: ', error)})
+  .then(() => {
+    console.log(`Connected to ${database} successfully`)
+  })
+  .catch((error) => {
+    console.error('Could not connect to Mongo DB: ', error)
+  })
 
 // Set middlewares
 app.use(bodyParser.urlencoded({extended: false}))
